@@ -1,0 +1,20 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Vtk13\\Cc\\": "src"
+        }
+    },
+    "require": {
+        "vtk13/lib-sql": "dev-master",
+        "vtk13/mvc": "0.2.*",
+        "php-di/php-di": "5.*",
+        "robmorgan/phinx": "*",
+        "components/jquery": "2.0.*",
+        "guzzlehttp/guzzle": "6.*",
+        "components/bootstrap": "3.*"
+    },
+    "config": {
+        "component-baseurl": "/assets",
+        "component-dir": "public/assets"
+    }
+}
