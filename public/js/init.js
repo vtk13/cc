@@ -16,7 +16,7 @@ require.config({
                 "jquery"
             ]
         }
-    },
+    }
 });
 
 require(['jquery', 'bootstrap', 'selectize'], function($, bs) {

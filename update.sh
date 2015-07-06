@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 git pull
 composer install
-bower install
+bower --allow-root install
 rm -rf public/assets
 mkdir public/assets
 
