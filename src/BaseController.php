@@ -2,10 +2,9 @@
 namespace Vtk13\Cc;
 
 use Vtk13\LibSql\IDatabase;
-use Vtk13\LibSql\Mysql\Mysql;
 use Vtk13\Mvc\Handlers\AbstractController;
 
-class BaseController extends AbstractController
+abstract class BaseController extends AbstractController
 {
     /**
      * @Inject
