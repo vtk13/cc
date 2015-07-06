@@ -1,3 +1,24 @@
+require.config({
+    "baseUrl": "/",
+    "paths": {
+        "jquery": "assets/jquery",
+        "bootstrap": "assets/bootstrap/js/bootstrap.min",
+        "selectize": "assets/selectize/selectize"
+    },
+    "shim": {
+        "bootstrap": {
+            "deps": [
+                "jquery"
+            ]
+        },
+        "selectize": {
+            "deps": [
+                "jquery"
+            ]
+        }
+    },
+});
+
 require(['jquery', 'bootstrap', 'selectize'], function($, bs) {
     $('select[name=good_id]').selectize({
         valueField: 'id',
