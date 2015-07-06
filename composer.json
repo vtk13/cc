@@ -11,8 +11,7 @@
         "robmorgan/phinx": "*",
         "components/jquery": "2.0.*",
         "guzzlehttp/guzzle": "6.*",
-        "components/bootstrap": "3.*",
-        "": "*"
+        "components/bootstrap": "3.*"
     },
     "config": {
         "component-baseurl": "/assets",
