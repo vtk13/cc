@@ -27,7 +27,6 @@ require(['jquery', 'bootstrap', 'selectize'], function($, bs) {
         options: [],
         create: false,
         load: function(query, callback) {
-            if (!query.length) return callback();
             $.ajax({
                 url: '/ajax/goods',
                 type: 'GET',
@@ -40,6 +39,30 @@ require(['jquery', 'bootstrap', 'selectize'], function($, bs) {
                 },
                 success: function(res) {
                     callback(res.goods);
+                }
+            });
+        }
+    });
+
+    $('select[name=shop_id]').selectize({
+        valueField: 'id',
+        labelField: 'title',
+        searchField: 'title',
+        options: [],
+        create: false,
+        load: function(query, callback) {
+            $.ajax({
+                url: '/ajax/shops',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    q: query
+                },
+                error: function() {
+                    callback();
+                },
+                success: function(res) {
+                    callback(res.shops);
                 }
             });
         }

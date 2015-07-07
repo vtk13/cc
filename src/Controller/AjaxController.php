@@ -18,4 +18,12 @@ class AjaxController extends AuthenticatedController
             'goods' => $this->db->select("SELECT * FROM goods WHERE title LIKE '%{$q}%'"),
         ]);
     }
+
+    public function shopsGET()
+    {
+        $q = $this->db->escape($_GET['q']);
+        return new JsonResponse([
+            'shops' => $this->db->select("SELECT * FROM shops WHERE title LIKE '%{$q}%'"),
+        ]);
+    }
 }
