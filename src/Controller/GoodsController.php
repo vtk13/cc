@@ -135,7 +135,7 @@ class GoodsController extends AuthenticatedController
                 $parent = $this->db->selectRow("SELECT * FROM goods WHERE id={$parentId}");
                 if (empty($parent)) {
                     $parent = [
-                        'level'         => 0,
+                        'level'         => -1,
                         'node_right'    => $this->db->selectValue('SELECT MAX(node_right) FROM goods') + 1,
                     ];
                 }
