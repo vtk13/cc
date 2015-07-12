@@ -2,6 +2,7 @@
 git pull
 composer install
 bower --allow-root install
+vendor/bin/phinx migrate
 rm -rf public/assets
 mkdir public/assets
 
