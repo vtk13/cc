@@ -22,7 +22,11 @@
                 <div class="list-group">
                 {% for cost in costs %}
                     <div class="list-group-item">
-                        {{ cost.unit_cost }}/кг? {{ cost.title }} {{ cost.timestamp|date('Y-m-d') }}
+                        {% if good.packed %}{{ cost.pack_cost }}р/уп{% endif %}
+                        {{ cost.unit_cost }}р/{{ good.unit|unitStr }}
+                        {{ cost.title }}
+                        <span title="{{ cost.timestamp|date('Y-m-d H:i') }}" class="pull-right glyphicon glyphicon-time"></span>
+
                     </div>
                 {% endfor %}
                 </div>

@@ -14,6 +14,25 @@
                 <input class="form-control" name="title">
             </div>
             <div class="form-group">
+                <label>Продается ли товар в фиксированной упаковке?</label>
+                <select class="form-control" name="packed">
+                    <option value="0">Нет, товар продает на разновес либо в упаковках с разным весом</option>
+                    <option value="1">Да, товар продается фиксирванными упаковками</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Единица измерения</label>
+                <select class="form-control" name="unit">
+                    {% for unit in units %}
+                        <option value="{{ unit.id }}">{{ unit.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Количество в упаковке</label>
+                <input class="form-control" name="pack_volume" value="1">
+            </div>
+            <div class="form-group">
                 <button class="btn btn-success">Добавить</button>
             </div>
         </form>

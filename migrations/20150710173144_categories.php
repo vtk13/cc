@@ -19,9 +19,9 @@ class Categories extends AbstractMigration
     public function down()
     {
         $this->table('goods')
-            ->removeColumn('node_left', 'integer')
-            ->removeColumn('node_right', 'integer')
-            ->removeColumn('level', 'integer')
+            ->removeColumn('node_left')
+            ->removeColumn('node_right')
+            ->removeColumn('level')
             ->save();
     }
 }

@@ -25,7 +25,9 @@ class GoodsController extends AuthenticatedController
 
     public function addGET()
     {
-
+        return [
+            'units' => $this->db->select('SELECT * FROM units'),
+        ];
     }
 
     public function addPOST()
@@ -38,24 +40,42 @@ class GoodsController extends AuthenticatedController
         return new RedirectResponse('/goods/list');
     }
 
-    public function viewGET($id)
+    protected function listCosts($id)
     {
         $id = (int)$id;
         $node = $this->db->selectRow("SELECT * FROM goods WHERE id={$id}");
-        $costs = $this->db->select(
-            "SELECT b.title, a.timestamp, ROUND(a.cost/a.amount, 2) as unit_cost
+        if ($node['packed']) {
+            return $this->db->select(
+                "SELECT b.title, a.timestamp, ROUND(a.cost/a.amount, 2) as pack_cost, ROUND(a.cost/a.amount/sg.pack_volume, 2) as unit_cost
                FROM goods g
                     JOIN sales a ON g.id=a.good_id
+                    JOIN goods sg ON a.good_id=sg.id
                     JOIN shops b ON a.shop_id=b.id
               WHERE {$node['node_left']}<=g.node_left AND g.node_right<={$node['node_right']}
            ORDER BY a.timestamp DESC"
-        );
+            );
+        } else {
+            return $this->db->select(
+                "SELECT b.title, a.timestamp, ROUND(a.cost/a.amount/sg.pack_volume, 2) as unit_cost
+               FROM goods g
+                    JOIN sales a ON g.id=a.good_id
+                    JOIN goods sg ON a.good_id=sg.id
+                    JOIN shops b ON a.shop_id=b.id
+              WHERE {$node['node_left']}<=g.node_left AND g.node_right<={$node['node_right']}
+           ORDER BY a.timestamp DESC"
+            );
+        }
+    }
+
+    public function viewGET($id)
+    {
+        $id = (int)$id;
 
         return [
-            'good'      => $this->db->selectRow('SELECT * FROM goods WHERE id=' . (int)$id),
+            'good'      => $this->db->selectRow("SELECT * FROM goods WHERE id={$id}"),
             'parents'   => $this->listParents($id),
             'children'  => $this->listChildren($id),
-            'costs'     => $costs,
+            'costs'     => $this->listCosts($id),
         ];
     }
 
@@ -71,7 +91,8 @@ class GoodsController extends AuthenticatedController
         }
 
         return [
-            'good' => $this->db->selectRow('SELECT * FROM goods WHERE id=' . (int)$id),
+            'good'      => $this->db->selectRow('SELECT * FROM goods WHERE id=' . (int)$id),
+            'units'     => $this->db->select('SELECT * FROM units'),
             'parents'   => $parents,
         ];
     }
@@ -80,8 +101,11 @@ class GoodsController extends AuthenticatedController
     {
         $id = (int)$id;
         $data = [
-            'bar_code'  => $_POST['bar_code'],
-            'title'     => $_POST['title'],
+            'bar_code'      => $_POST['bar_code'],
+            'title'         => $_POST['title'],
+            'packed'        => $_POST['packed'],
+            'unit'          => $_POST['unit'],
+            'pack_volume'   => $_POST['pack_volume'],
         ];
         $this->db->update('goods', $data, "id={$id}");
         $this->nodeSetParent($id, isset($_POST['parent_id']) ? $_POST['parent_id'] : 0);
@@ -90,6 +114,9 @@ class GoodsController extends AuthenticatedController
 
     protected function nodeSetParent($id, $parentId)
     {
+        $id = (int)$id;
+        $parentId = (int)$parentId;
+
         $node = $this->db->selectRow('SELECT * FROM goods WHERE id=' . (int)$id);
         switch ($node['node_right'] - $node['node_left']) {
             case 0: // new node, node_right == 0 and node_left == 0
@@ -103,6 +130,12 @@ class GoodsController extends AuthenticatedController
             default: // existent node with children
                 // prepare space
                 $parent = $this->db->selectRow("SELECT * FROM goods WHERE id={$parentId}");
+                if (empty($parent)) {
+                    $parent = [
+                        'level'         => 0,
+                        'node_right'    => $this->db->selectValue('SELECT MAX(node_right) FROM goods') + 1,
+                    ];
+                }
                 $n = $node['node_right'] - $node['node_left'] + 1; // size of subtree
                 $this->db->query("UPDATE goods SET node_left=node_left+{$n} WHERE node_left>={$parent['node_right']}");
                 $this->db->query("UPDATE goods SET node_right=node_right+{$n} WHERE node_right>={$parent['node_right']}");
@@ -129,6 +162,9 @@ class GoodsController extends AuthenticatedController
 
     protected function nodeNewInsert($id, $parentId)
     {
+        $id = (int)$id;
+        $parentId = (int)$parentId;
+
         if ($parentId == 0) {
             $max = $this->db->selectValue('SELECT MAX(node_right) FROM goods');
             $data = [
