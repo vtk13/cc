@@ -6,7 +6,7 @@
         <h3>Просмотр товаров</h3>
         <ul class="list-group">
             {% for good in goods %}
-                <li class="list-group-item">{{ good.bar_code }} {{ good.title }}</li>
+                <li class="list-group-item">{{ good.bar_code }} <a href="/goods/view/{{ good.id }}">{{ good.title }}</a></li>
             {% endfor %}
         </ul>
     </div>

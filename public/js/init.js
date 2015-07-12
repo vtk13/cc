@@ -20,7 +20,7 @@ require.config({
 });
 
 require(['jquery', 'bootstrap', 'selectize'], function($, bs) {
-    $('select[name=good_id]').selectize({
+    $('select[name=good_id]').add('select[name=parent_id]').selectize({
         valueField: 'id',
         labelField: 'title',
         searchField: 'title',
