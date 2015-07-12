@@ -33,8 +33,11 @@ class GoodsController extends AuthenticatedController
     public function addPOST()
     {
         $this->db->insert('goods', [
-            'bar_code' => $_POST['bar_code'],
-            'title' => $_POST['title'],
+            'bar_code'      => $_POST['bar_code'],
+            'title'         => $_POST['title'],
+            'packed'        => $_POST['packed'],
+            'unit'          => $_POST['unit'],
+            'pack_volume'   => $_POST['pack_volume'],
         ]);
         $this->nodeSetParent($this->db->insertId(), isset($_POST['parent_id']) ? $_POST['parent_id'] : 0);
         return new RedirectResponse('/goods/list');
